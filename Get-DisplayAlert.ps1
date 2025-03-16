@@ -1,18 +1,35 @@
-function Get-DisplayNotification {
+function Get-DisplayAlert {
 	Param (
 		#we do the params this way so the help shows the description
 		[Parameter(Mandatory = $true)][string]
 		#required, text for the notification
-		$notificationText,
+		$alertText,
 		[Parameter(Mandatory = $false)][string]
-		#the name of the sound you want to play
-		$soundName,
+		#the type, either critical/informational/warning
+		$alertType,
+		[Parameter(Mandatory = $false)][string[]]
+		#an array (applescript list) of buttons. Can be up to three (check)
+		$alertButtons,
 		[Parameter(Mandatory = $false)][string]
-		#default filename for the dialog
-		$subTitle,
+		#name of the default button. This HAS to be in $alertButtons or it's a no go
+		$alertDefaultButtonText,
+		[Parameter(Mandatory = $false)][Int32]
+		#number of the default button, this has to match the position in $alertButtons. Range is 1-3. Mutually exclusive with text
+		[ValidateRange(1,3)]
+		$alertDefaultButtonNum,
 		[Parameter(Mandatory = $false)][string]
-		#default filename for the dialog
-		$title
+		#name of the cancel button. This HAS to be in $alertButtons or it's a no go
+		$alertCancelButtonText,
+		[Parameter(Mandatory = $false)][Int32]
+		#number of the default button, this has to match the position in $alertButtons. Range is 1-3. Mutually exclusive with text
+		[ValidateRange(1,3)]
+		$alertCancelDefaultButtonNum,
+		[Parameter(Mandatory = $false)][Int32]
+		#optional parameter for auto-dismissing the alert. will add a "gave up" status to the reply if present
+		$alertGivingUpAfter,
+		[Paramter(Mandatory = $false)][string]
+		#optional explanatory text
+		$alertMessage
 	)
 
 	if (-Not $IsMacOS) {
@@ -20,12 +37,12 @@ function Get-DisplayNotification {
 		Exit
 	}
 
-	$displayNotificationCommand = "display notification "
+	$displayAlertCommand = "display alert "
 
 	##parameter processing
 	#notification text
 	#since this is mandatory, we don't have to test
-	$displayNotificationCommand = $displayNotificationCommand + "`"$notificationText`" "
+	$displayAlertCommand = $displayAlertCommand + "`"$alertText`" "
 
 	#sound name text
 	if(-not [string]::IsNullOrEmpty($soundName)) {
@@ -46,4 +63,3 @@ function Get-DisplayNotification {
 }
 
 #what the module shows the world
-Export-ModuleMember -Function Get-DisplayNotification
