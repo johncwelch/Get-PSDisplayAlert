@@ -1,2 +1,2 @@
-# Get-PSDisplayAlert
-A bridge to display aler
+# Get-PSDisplayAlert  
+A bridge to display alert  
